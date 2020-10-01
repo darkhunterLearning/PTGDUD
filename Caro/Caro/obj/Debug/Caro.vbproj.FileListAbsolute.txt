@@ -1,1 +1,10 @@
 D:\HCMUE\PTGDUD\Caro\Caro\bin\Debug\Caro.exe.config
+D:\HCMUE\PTGDUD\Caro\Caro\bin\Debug\Caro.exe
+D:\HCMUE\PTGDUD\Caro\Caro\bin\Debug\Caro.pdb
+D:\HCMUE\PTGDUD\Caro\Caro\bin\Debug\Caro.xml
+D:\HCMUE\PTGDUD\Caro\Caro\obj\Debug\Caro.Form1.resources
+D:\HCMUE\PTGDUD\Caro\Caro\obj\Debug\Caro.Resources.resources
+D:\HCMUE\PTGDUD\Caro\Caro\obj\Debug\Caro.vbproj.GenerateResource.Cache
+D:\HCMUE\PTGDUD\Caro\Caro\obj\Debug\Caro.exe
+D:\HCMUE\PTGDUD\Caro\Caro\obj\Debug\Caro.xml
+D:\HCMUE\PTGDUD\Caro\Caro\obj\Debug\Caro.pdb
