@@ -31,17 +31,17 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.pnlChessBoard = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.pnlInfo = new System.Windows.Forms.Panel();
             this.pctbLogo = new System.Windows.Forms.PictureBox();
-            this.txbPlayerName = new System.Windows.Forms.TextBox();
-            this.prcbTime = new System.Windows.Forms.ProgressBar();
-            this.txbIP = new System.Windows.Forms.TextBox();
-            this.btnStart = new System.Windows.Forms.Button();
-            this.pctbMark = new System.Windows.Forms.PictureBox();
+            this.pnlInfo = new System.Windows.Forms.Panel();
             this.lblDemo = new System.Windows.Forms.Label();
+            this.pctbMark = new System.Windows.Forms.PictureBox();
+            this.btnStart = new System.Windows.Forms.Button();
+            this.txbIP = new System.Windows.Forms.TextBox();
+            this.prcbTime = new System.Windows.Forms.ProgressBar();
+            this.txbPlayerName = new System.Windows.Forms.TextBox();
             this.panel2.SuspendLayout();
-            this.pnlInfo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pctbLogo)).BeginInit();
+            this.pnlInfo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pctbMark)).BeginInit();
             this.SuspendLayout();
             // 
@@ -61,6 +61,17 @@
             this.panel2.Size = new System.Drawing.Size(273, 251);
             this.panel2.TabIndex = 1;
             // 
+            // pctbLogo
+            // 
+            this.pctbLogo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pctbLogo.BackgroundImage = global::Caro.Properties.Resources.logo;
+            this.pctbLogo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pctbLogo.Location = new System.Drawing.Point(3, 0);
+            this.pctbLogo.Name = "pctbLogo";
+            this.pctbLogo.Size = new System.Drawing.Size(267, 249);
+            this.pctbLogo.TabIndex = 0;
+            this.pctbLogo.TabStop = false;
+            // 
             // pnlInfo
             // 
             this.pnlInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -75,37 +86,24 @@
             this.pnlInfo.Size = new System.Drawing.Size(271, 202);
             this.pnlInfo.TabIndex = 2;
             // 
-            // pctbLogo
+            // lblDemo
             // 
-            this.pctbLogo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pctbLogo.BackgroundImage = global::Caro.Properties.Resources.logo;
-            this.pctbLogo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pctbLogo.Location = new System.Drawing.Point(3, 0);
-            this.pctbLogo.Name = "pctbLogo";
-            this.pctbLogo.Size = new System.Drawing.Size(267, 249);
-            this.pctbLogo.TabIndex = 0;
-            this.pctbLogo.TabStop = false;
+            this.lblDemo.AutoSize = true;
+            this.lblDemo.Font = new System.Drawing.Font("Monotype Corsiva", 36F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDemo.Location = new System.Drawing.Point(3, 133);
+            this.lblDemo.Name = "lblDemo";
+            this.lblDemo.Size = new System.Drawing.Size(219, 57);
+            this.lblDemo.TabIndex = 5;
+            this.lblDemo.Text = "Game Caro";
             // 
-            // txbPlayerName
+            // pctbMark
             // 
-            this.txbPlayerName.Location = new System.Drawing.Point(6, 8);
-            this.txbPlayerName.Name = "txbPlayerName";
-            this.txbPlayerName.Size = new System.Drawing.Size(155, 20);
-            this.txbPlayerName.TabIndex = 0;
-            // 
-            // prcbTime
-            // 
-            this.prcbTime.Location = new System.Drawing.Point(6, 40);
-            this.prcbTime.Name = "prcbTime";
-            this.prcbTime.Size = new System.Drawing.Size(154, 25);
-            this.prcbTime.TabIndex = 1;
-            // 
-            // txbIP
-            // 
-            this.txbIP.Location = new System.Drawing.Point(6, 78);
-            this.txbIP.Name = "txbIP";
-            this.txbIP.Size = new System.Drawing.Size(154, 20);
-            this.txbIP.TabIndex = 2;
+            this.pctbMark.Location = new System.Drawing.Point(165, 8);
+            this.pctbMark.Name = "pctbMark";
+            this.pctbMark.Size = new System.Drawing.Size(104, 121);
+            this.pctbMark.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pctbMark.TabIndex = 4;
+            this.pctbMark.TabStop = false;
             // 
             // btnStart
             // 
@@ -116,23 +114,26 @@
             this.btnStart.Text = "Start";
             this.btnStart.UseVisualStyleBackColor = true;
             // 
-            // pctbMark
+            // txbIP
             // 
-            this.pctbMark.Location = new System.Drawing.Point(165, 8);
-            this.pctbMark.Name = "pctbMark";
-            this.pctbMark.Size = new System.Drawing.Size(104, 121);
-            this.pctbMark.TabIndex = 4;
-            this.pctbMark.TabStop = false;
+            this.txbIP.Location = new System.Drawing.Point(6, 78);
+            this.txbIP.Name = "txbIP";
+            this.txbIP.Size = new System.Drawing.Size(154, 20);
+            this.txbIP.TabIndex = 2;
             // 
-            // lblDemo
+            // prcbTime
             // 
-            this.lblDemo.AutoSize = true;
-            this.lblDemo.Font = new System.Drawing.Font("Monotype Corsiva", 36F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDemo.Location = new System.Drawing.Point(3, 133);
-            this.lblDemo.Name = "lblDemo";
-            this.lblDemo.Size = new System.Drawing.Size(219, 57);
-            this.lblDemo.TabIndex = 5;
-            this.lblDemo.Text = "Game Caro";
+            this.prcbTime.Location = new System.Drawing.Point(6, 40);
+            this.prcbTime.Name = "prcbTime";
+            this.prcbTime.Size = new System.Drawing.Size(154, 25);
+            this.prcbTime.TabIndex = 1;
+            // 
+            // txbPlayerName
+            // 
+            this.txbPlayerName.Location = new System.Drawing.Point(6, 8);
+            this.txbPlayerName.Name = "txbPlayerName";
+            this.txbPlayerName.Size = new System.Drawing.Size(155, 20);
+            this.txbPlayerName.TabIndex = 0;
             // 
             // Form1
             // 
@@ -146,9 +147,9 @@
             this.Name = "Form1";
             this.Text = "Caro";
             this.panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pctbLogo)).EndInit();
             this.pnlInfo.ResumeLayout(false);
             this.pnlInfo.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pctbLogo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pctbMark)).EndInit();
             this.ResumeLayout(false);
 
