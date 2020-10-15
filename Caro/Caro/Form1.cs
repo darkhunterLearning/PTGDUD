@@ -15,7 +15,15 @@ namespace Caro
         public Form1()
         {
             InitializeComponent();
+            
+            prcbTime.Step = Cons.STEP_COOL_DOWN;
+            prcbTime.Maximum = Cons.TIME_COOL_DOWN;
+            prcbTime.Value = 0;
+
+            tmCooldown.Interval = Cons.INTERVAL_COOL_DOWN;
+
             DrawChessBoard();
+
         }
         private List<Player> player;
 
@@ -43,6 +51,7 @@ namespace Caro
 
         void DrawChessBoard()
         {
+            pnlChessBoard.Enabled = true;
             Matrix = new List<List<Button>>();
             this.Player = new List<Player>() { 
                 new Player ("Seimei", Image.FromFile(Application.StartupPath + "\\assets\\x_symbol.png")),
@@ -86,15 +95,22 @@ namespace Caro
             Mark(btn);
             ChangePlayer();
 
+            tmCooldown.Start();
+            prcbTime.Value = 0;
+
             if (isEndGame(btn))
             {
                 EndGame();
             }
+
+         
         }
 
-        private void EndGame()
+        public void EndGame()
         {
-            MessageBox.Show("Game has end!");
+            tmCooldown.Stop();
+            pnlChessBoard.Enabled = false;
+            MessageBox.Show("End!");
         }
 
         private bool isEndGame(Button btn)
@@ -185,7 +201,7 @@ namespace Caro
             }
 
             int countDown = 0;
-            for (int i = 1; i <=Cons.CHESS_BOARD_WIDTH - point.X; i++)
+            for (int i = 1; i <= Cons.CHESS_BOARD_WIDTH - point.X; i++)
             {
                 if (point.Y + i >= Cons.CHESS_BOARD_HEIGHT || point.X + i >= Cons.CHESS_BOARD_WIDTH)
                     break;
@@ -207,8 +223,9 @@ namespace Caro
             int countUp = 0;
             for (int i = 0; i <= point.X; i++)
             {
-                if (point.X + i >= Cons.CHESS_BOARD_WIDTH || point.Y - i <= 0)
+                if (point.X + i > Cons.CHESS_BOARD_WIDTH || point.Y - i < 0)
                     break;
+
                 if (Matrix[point.Y - i][point.X + i].BackgroundImage == btn.BackgroundImage)
                 {
                     countUp++;
@@ -220,8 +237,9 @@ namespace Caro
             int countDown = 0;
             for (int i = 1; i <= Cons.CHESS_BOARD_WIDTH - point.X; i++)
             {
-                if (point.Y + i >= Cons.CHESS_BOARD_HEIGHT || point.X - i <= 0)
+                if (point.Y + i >= Cons.CHESS_BOARD_HEIGHT || point.X - i < 0)
                     break;
+
                 if (Matrix[point.Y + i][point.X - i].BackgroundImage == btn.BackgroundImage)
                 {
                     countDown++;
@@ -231,6 +249,7 @@ namespace Caro
             }
 
             return countUp + countDown == 5;
+            
         }
         private void Mark(Button btn){
             btn.BackgroundImage = Player[CurrentPlayer].Mark;
@@ -241,6 +260,17 @@ namespace Caro
         {
             txbPlayerName.Text = Player[CurrentPlayer].Name;
             pctbMark.Image = Player[CurrentPlayer].Mark;
+        }
+
+
+        private void tmCooldown_Tick(object sender, EventArgs e)
+        {
+            prcbTime.PerformStep();
+
+            if (prcbTime.Value >= prcbTime.Maximum)
+            {
+                EndGame();               
+            }
         }
     }
 }
