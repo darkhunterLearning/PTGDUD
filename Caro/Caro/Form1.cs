@@ -22,7 +22,7 @@ namespace Caro
 
             tmCooldown.Interval = Cons.INTERVAL_COOL_DOWN;
 
-            DrawChessBoard();
+            NewGame();
 
         }
         private List<Player> player;
@@ -52,6 +52,9 @@ namespace Caro
         void DrawChessBoard()
         {
             pnlChessBoard.Enabled = true;
+            pnlChessBoard.Controls.Clear();
+            PlayTimeLine = new Stack<PlayInfo>();
+
             Matrix = new List<List<Button>>();
             this.Player = new List<Player>() { 
                 new Player ("Seimei", Image.FromFile(Application.StartupPath + "\\assets\\x_symbol.png")),
@@ -85,6 +88,8 @@ namespace Caro
                 firstButton.Width = 0;
                 firstButton.Height = 0;
             }
+
+            
         }
 
         void btn_Click(object sender, EventArgs e)
@@ -93,6 +98,11 @@ namespace Caro
             if (btn.BackgroundImage != null)
                 return;
             Mark(btn);
+
+            PlayTimeLine.Push(new PlayInfo(GetChessPoint(btn), CurrentPlayer));
+
+            CurrentPlayer = CurrentPlayer == 1 ? 0 : 1;
+
             ChangePlayer();
 
             tmCooldown.Start();
@@ -110,6 +120,7 @@ namespace Caro
         {
             tmCooldown.Stop();
             pnlChessBoard.Enabled = false;
+            undoToolStripMenuItem.Enabled = false;
             MessageBox.Show("End!");
         }
 
@@ -253,7 +264,7 @@ namespace Caro
         }
         private void Mark(Button btn){
             btn.BackgroundImage = Player[CurrentPlayer].Mark;
-            CurrentPlayer = CurrentPlayer == 1 ? 0 : 1;
+           
         }
 
         private void ChangePlayer()
@@ -271,6 +282,74 @@ namespace Caro
             {
                 EndGame();               
             }
+        }
+
+        private Stack<PlayInfo> playTimeLine;
+
+        public Stack<PlayInfo> PlayTimeLine
+        {
+            get { return playTimeLine; }
+            set { playTimeLine = value; }
+        }
+
+        void NewGame()
+        {
+            prcbTime.Value = 0;
+            tmCooldown.Stop();
+            undoToolStripMenuItem.Enabled = true;
+            DrawChessBoard();
+        }
+
+        bool Undo()
+        {
+            if (PlayTimeLine.Count <= 0)
+            {
+                return false;
+            }
+            PlayInfo oldPlayer = PlayTimeLine.Pop();
+            Button btn = Matrix[oldPlayer.Point.Y][oldPlayer.Point.X];
+
+            btn.BackgroundImage = null;
+
+            if (PlayTimeLine.Count <= 0)
+            {                
+                CurrentPlayer = 0;
+            }
+            else
+            {
+                oldPlayer = PlayTimeLine.Peek();
+                CurrentPlayer = oldPlayer.CurrentPlayer == 1 ? 0 : 1;
+            }
+
+            ChangePlayer();
+
+            return true;
+        }
+
+        void Exit()
+        {
+            Application.Exit();
+        }
+
+        private void newGameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            NewGame();
+        }
+
+        private void undoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Undo();
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Exit();
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (MessageBox.Show("Are you sure want to exit?", "Confirm Exit", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != System.Windows.Forms.DialogResult.OK)
+                e.Cancel = true;
         }
     }
 }
