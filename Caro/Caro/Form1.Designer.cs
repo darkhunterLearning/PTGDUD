@@ -36,17 +36,17 @@
             this.pnlInfo = new System.Windows.Forms.Panel();
             this.lblDemo = new System.Windows.Forms.Label();
             this.pctbMark = new System.Windows.Forms.PictureBox();
-            this.btnStart = new System.Windows.Forms.Button();
+            this.btnConnect = new System.Windows.Forms.Button();
             this.txbIP = new System.Windows.Forms.TextBox();
             this.prcbTime = new System.Windows.Forms.ProgressBar();
             this.txbPlayerName = new System.Windows.Forms.TextBox();
             this.tmCooldown = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.menuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pctbLogo)).BeginInit();
             this.pnlInfo.SuspendLayout();
@@ -86,7 +86,7 @@
             this.pnlInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlInfo.Controls.Add(this.lblDemo);
             this.pnlInfo.Controls.Add(this.pctbMark);
-            this.pnlInfo.Controls.Add(this.btnStart);
+            this.pnlInfo.Controls.Add(this.btnConnect);
             this.pnlInfo.Controls.Add(this.txbIP);
             this.pnlInfo.Controls.Add(this.prcbTime);
             this.pnlInfo.Controls.Add(this.txbPlayerName);
@@ -114,14 +114,15 @@
             this.pctbMark.TabIndex = 4;
             this.pctbMark.TabStop = false;
             // 
-            // btnStart
+            // btnConnect
             // 
-            this.btnStart.Location = new System.Drawing.Point(6, 107);
-            this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(153, 23);
-            this.btnStart.TabIndex = 3;
-            this.btnStart.Text = "Start";
-            this.btnStart.UseVisualStyleBackColor = true;
+            this.btnConnect.Location = new System.Drawing.Point(6, 107);
+            this.btnConnect.Name = "btnConnect";
+            this.btnConnect.Size = new System.Drawing.Size(153, 23);
+            this.btnConnect.TabIndex = 3;
+            this.btnConnect.Text = "Connect";
+            this.btnConnect.UseVisualStyleBackColor = true;
+            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
             // 
             // txbIP
             // 
@@ -170,12 +171,6 @@
             this.menuToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
             this.menuToolStripMenuItem.Text = "Menu";
             // 
-            // aboutToolStripMenuItem
-            // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
-            this.aboutToolStripMenuItem.Text = "About";
-            // 
             // newGameToolStripMenuItem
             // 
             this.newGameToolStripMenuItem.Name = "newGameToolStripMenuItem";
@@ -200,6 +195,12 @@
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
+            this.aboutToolStripMenuItem.Text = "About";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -214,6 +215,7 @@
             this.Name = "Form1";
             this.Text = "Caro";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.Shown += new System.EventHandler(this.Form1_Shown);
             this.panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pctbLogo)).EndInit();
             this.pnlInfo.ResumeLayout(false);
@@ -234,7 +236,7 @@
         private System.Windows.Forms.Panel pnlInfo;
         private System.Windows.Forms.Label lblDemo;
         private System.Windows.Forms.PictureBox pctbMark;
-        private System.Windows.Forms.Button btnStart;
+        private System.Windows.Forms.Button btnConnect;
         private System.Windows.Forms.TextBox txbIP;
         private System.Windows.Forms.ProgressBar prcbTime;
         private System.Windows.Forms.TextBox txbPlayerName;

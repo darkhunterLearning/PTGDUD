@@ -4,7 +4,9 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -12,6 +14,7 @@ namespace Caro
 {
     public partial class Form1 : Form
     {
+        SocketManager socket;
         public Form1()
         {
             InitializeComponent();
@@ -21,6 +24,8 @@ namespace Caro
             prcbTime.Value = 0;
 
             tmCooldown.Interval = Cons.INTERVAL_COOL_DOWN;
+
+            socket = new SocketManager();
 
             NewGame();
 
@@ -350,6 +355,61 @@ namespace Caro
         {
             if (MessageBox.Show("Are you sure want to exit?", "Confirm Exit", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != System.Windows.Forms.DialogResult.OK)
                 e.Cancel = true;
+        }
+
+        private void btnConnect_Click(object sender, EventArgs e)
+        {
+            socket.IP = txbIP.Text;
+
+            if (!socket.ConnectServer())
+            {
+                socket.CreateServer();
+                Thread listenThread = new Thread(() =>
+                {
+                    while (true)
+                    {
+                        Thread.Sleep(500);
+                        try
+                        {
+                            Listen();
+                            break;
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+                    
+                });
+                listenThread.IsBackground = true;
+                listenThread.Start();
+            }
+            else
+            {
+                Thread listenThread = new Thread(() =>
+                {
+                    Listen();
+                });
+                listenThread.IsBackground = true;
+                listenThread.Start();
+                socket.Send("Chim sẻ gọi đại bàng!");
+            }
+        }
+
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+            txbIP.Text = socket.GetLocalIPv4(NetworkInterfaceType.Wireless80211);
+
+            if (string.IsNullOrEmpty(txbIP.Text))
+            {
+                txbIP.Text = socket.GetLocalIPv4(NetworkInterfaceType.Ethernet);
+            }
+        }
+        void Listen()
+        {
+            string data = (string)socket.Receive();
+
+            MessageBox.Show(data);
         }
     }
 }
