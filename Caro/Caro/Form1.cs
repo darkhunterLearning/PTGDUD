@@ -18,7 +18,9 @@ namespace Caro
         public Form1()
         {
             InitializeComponent();
-            
+
+            Control.CheckForIllegalCrossThreadCalls = false;
+
             prcbTime.Step = Cons.STEP_COOL_DOWN;
             prcbTime.Maximum = Cons.TIME_COOL_DOWN;
             prcbTime.Value = 0;
@@ -108,10 +110,14 @@ namespace Caro
 
             CurrentPlayer = CurrentPlayer == 1 ? 0 : 1;
 
-            ChangePlayer();
+            ChangePlayer();           
 
             tmCooldown.Start();
+            pnlChessBoard.Enabled = false;
             prcbTime.Value = 0;
+
+            socket.Send(new SocketData((int)SocketCommand.SEND_POINT, "", GetChessPoint(btn)));
+            Listen();
 
             if (isEndGame(btn))
             {
@@ -278,6 +284,31 @@ namespace Caro
             pctbMark.Image = Player[CurrentPlayer].Mark;
         }
 
+        public void OtherPlayerMark(Point point)
+        {
+
+            Button btn = Matrix[point.Y][point.X];
+
+            if (btn.BackgroundImage != null)
+                return;
+
+            Mark(btn);
+
+            PlayTimeLine.Push(new PlayInfo(GetChessPoint(btn), CurrentPlayer));
+
+            CurrentPlayer = CurrentPlayer == 1 ? 0 : 1;
+
+            ChangePlayer();
+
+            //tmCooldown.Start();
+            //prcbTime.Value = 0;
+            //socket.Send(new SocketData((int)SocketCommand.SEND_POINT, "", new Point(0, 0)));
+
+            if (isEndGame(btn))
+            {
+                EndGame();
+            }
+        }
 
         private void tmCooldown_Tick(object sender, EventArgs e)
         {
@@ -363,36 +394,15 @@ namespace Caro
 
             if (!socket.ConnectServer())
             {
+                socket.isServer = true;
+                pnlChessBoard.Enabled = true;
                 socket.CreateServer();
-                Thread listenThread = new Thread(() =>
-                {
-                    while (true)
-                    {
-                        Thread.Sleep(500);
-                        try
-                        {
-                            Listen();
-                            break;
-                        }
-                        catch
-                        {
-
-                        }
-                    }
-                    
-                });
-                listenThread.IsBackground = true;
-                listenThread.Start();
             }
             else
             {
-                Thread listenThread = new Thread(() =>
-                {
-                    Listen();
-                });
-                listenThread.IsBackground = true;
-                listenThread.Start();
-                socket.Send("Chim sẻ gọi đại bàng!");
+                socket.isServer = false;
+                pnlChessBoard.Enabled = false;
+                Listen();
             }
         }
 
@@ -407,9 +417,63 @@ namespace Caro
         }
         void Listen()
         {
-            string data = (string)socket.Receive();
-
-            MessageBox.Show(data);
+                Thread listenThread = new Thread(() =>
+                {
+                    try
+                    {
+                        SocketData data = (SocketData)socket.Receive();
+                        ProcessData(data);
+                    }
+                    catch { }
+                });
+                listenThread.IsBackground = true;
+                listenThread.Start(); 
         }
+
+        private void ProcessData(SocketData data)
+        {
+            switch (data.Command)
+            {
+                case (int)SocketCommand.NOTIFY:
+                    MessageBox.Show(data.Message);
+                    break;
+                case (int)SocketCommand.NEW_GAME:
+                    break;
+                case (int)SocketCommand.QUIT:
+                    break;
+                case (int)SocketCommand.SEND_POINT:
+                    this.Invoke((MethodInvoker)(() =>
+                    {
+                        prcbTime.Value = 0;
+                        pnlChessBoard.Enabled = true;
+                        tmCooldown.Start();
+                        OtherPlayerMark(data.Point);
+                    }));
+                    
+                    break;
+                case (int)SocketCommand.UNDO:
+                    break;
+                case (int)SocketCommand.END_GAME:
+                    break;
+                default:
+                    break;
+            }
+            Listen();
+        }
+        /*public class ButtonClickEvent : EventArgs
+        {
+            private Point clickedPoint;
+
+            public Point ClickedPoint
+            {
+                get { return clickedPoint; }
+                set { clickedPoint = value; }
+            }
+
+            public ButtonClickEvent(Point point)
+            {
+                this.ClickedPoint = point;
+            }
+        }*/
     }
 }
