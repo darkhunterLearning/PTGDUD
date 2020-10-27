@@ -80,12 +80,26 @@ namespace Caro
 
         private bool SendData(Socket target, byte[] data)
         {
-            return target.Send(data) == 1 ? true : false;
+            try
+            {
+                return target.Send(data) == 1 ? true : false;
+            }
+            catch 
+            {
+                return false;
+            }
         }
 
         private bool ReceiveData(Socket target, byte[] data)
         {
-            return target.Receive(data) == 1 ? true : false;
+            try
+            {
+                return target.Receive(data) == 1 ? true : false;
+            }
+            catch
+            {
+                return false;
+            }
         }
        
         // Nén đối tượng thành mảng byte

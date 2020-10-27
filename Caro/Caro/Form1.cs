@@ -64,8 +64,8 @@ namespace Caro
 
             Matrix = new List<List<Button>>();
             this.Player = new List<Player>() { 
-                new Player ("Seimei", Image.FromFile(Application.StartupPath + "\\assets\\x_symbol.png")),
-                new Player ("Dark Seimei", Image.FromFile(Application.StartupPath + "\\assets\\o_symbol.png"))
+                new Player ("Player X", Image.FromFile(Application.StartupPath + "\\assets\\x_symbol.png")),
+                new Player ("Player O", Image.FromFile(Application.StartupPath + "\\assets\\o_symbol.png"))
             };
             
             CurrentPlayer = 0;
@@ -117,11 +117,14 @@ namespace Caro
             prcbTime.Value = 0;
 
             socket.Send(new SocketData((int)SocketCommand.SEND_POINT, "", GetChessPoint(btn)));
+            undoToolStripMenuItem.Enabled = false;
+
             Listen();
 
             if (isEndGame(btn))
             {
                 EndGame();
+                socket.Send(new SocketData((int)SocketCommand.END_GAME, "", new Point()));
             }
 
          
@@ -132,7 +135,6 @@ namespace Caro
             tmCooldown.Stop();
             pnlChessBoard.Enabled = false;
             undoToolStripMenuItem.Enabled = false;
-            MessageBox.Show("End!");
         }
 
         private bool isEndGame(Button btn)
@@ -274,8 +276,7 @@ namespace Caro
             
         }
         private void Mark(Button btn){
-            btn.BackgroundImage = Player[CurrentPlayer].Mark;
-           
+            btn.BackgroundImage = Player[CurrentPlayer].Mark; 
         }
 
         private void ChangePlayer()
@@ -307,6 +308,7 @@ namespace Caro
             if (isEndGame(btn))
             {
                 EndGame();
+                socket.Send(new SocketData((int)SocketCommand.END_GAME, "", new Point()));
             }
         }
 
@@ -316,7 +318,8 @@ namespace Caro
 
             if (prcbTime.Value >= prcbTime.Maximum)
             {
-                EndGame();               
+                EndGame();
+                socket.Send(new SocketData((int)SocketCommand.TIME_OUT, "", new Point()));
             }
         }
 
@@ -333,14 +336,39 @@ namespace Caro
             prcbTime.Value = 0;
             tmCooldown.Stop();
             undoToolStripMenuItem.Enabled = true;
+            btnConnect.Enabled = true;
             DrawChessBoard();
         }
 
         bool Undo()
         {
+            try
+            {
+                if (PlayTimeLine.Count <= 0)
+                {
+                    return false;
+                }
+
+                bool isUndo1 = UndoAStep();
+                bool isUndo2 = UndoAStep();
+
+                PlayInfo oldPlayer = PlayTimeLine.Peek();
+                CurrentPlayer = oldPlayer.CurrentPlayer == 1 ? 0 : 1;
+                
+                return isUndo1 && isUndo2;
+            }
+            catch
+            { 
+                return false;
+            }
+        }
+
+        private bool UndoAStep()
+        {
+            prcbTime.Value = 0;
             if (PlayTimeLine.Count <= 0)
             {
-                return false;
+                prcbTime.Value = 0;
             }
             PlayInfo oldPlayer = PlayTimeLine.Pop();
             Button btn = Matrix[oldPlayer.Point.Y][oldPlayer.Point.X];
@@ -348,13 +376,12 @@ namespace Caro
             btn.BackgroundImage = null;
 
             if (PlayTimeLine.Count <= 0)
-            {                
+            {
                 CurrentPlayer = 0;
             }
             else
             {
-                oldPlayer = PlayTimeLine.Peek();
-                CurrentPlayer = oldPlayer.CurrentPlayer == 1 ? 0 : 1;
+                oldPlayer = PlayTimeLine.Peek();                
             }
 
             ChangePlayer();
@@ -370,11 +397,15 @@ namespace Caro
         private void newGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
             NewGame();
+            socket.Send(new SocketData((int)SocketCommand.NEW_GAME, "", new Point()));
+            pnlChessBoard.Enabled = true;
         }
 
         private void undoToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            prcbTime.Value = 0;
             Undo();
+            socket.Send(new SocketData((int)SocketCommand.UNDO, "", new Point()));
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -386,24 +417,37 @@ namespace Caro
         {
             if (MessageBox.Show("Are you sure want to exit?", "Confirm Exit", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != System.Windows.Forms.DialogResult.OK)
                 e.Cancel = true;
+            else
+            {
+                try
+                {
+                    socket.Send(new SocketData((int)SocketCommand.QUIT, "", new Point()));
+                }
+                catch { }
+            }
         }
 
         private void btnConnect_Click(object sender, EventArgs e)
         {
             socket.IP = txbIP.Text;
-
-            if (!socket.ConnectServer())
+            try
             {
-                socket.isServer = true;
-                pnlChessBoard.Enabled = true;
-                socket.CreateServer();
+                btnConnect.Enabled = false;
+                
+                if (!socket.ConnectServer())
+                {
+                    socket.isServer = true;
+                    pnlChessBoard.Enabled = true;     
+                    socket.CreateServer();
+                }
+                else
+                {
+                    socket.isServer = false;
+                    pnlChessBoard.Enabled = false;            
+                    Listen();
+                }
             }
-            else
-            {
-                socket.isServer = false;
-                pnlChessBoard.Enabled = false;
-                Listen();
-            }
+            catch { }
         }
 
         private void Form1_Shown(object sender, EventArgs e)
@@ -434,12 +478,18 @@ namespace Caro
         {
             switch (data.Command)
             {
-                case (int)SocketCommand.NOTIFY:
-                    MessageBox.Show(data.Message);
+                case (int)SocketCommand.NOTIFY:                   
                     break;
                 case (int)SocketCommand.NEW_GAME:
+                    this.Invoke((MethodInvoker)(() =>
+                    {
+                        NewGame();
+                        pnlChessBoard.Enabled = false;
+                    }));
                     break;
                 case (int)SocketCommand.QUIT:
+                    tmCooldown.Stop();
+                    MessageBox.Show("Opponent has exited!");
                     break;
                 case (int)SocketCommand.SEND_POINT:
                     this.Invoke((MethodInvoker)(() =>
@@ -448,12 +498,20 @@ namespace Caro
                         pnlChessBoard.Enabled = true;
                         tmCooldown.Start();
                         OtherPlayerMark(data.Point);
+                        undoToolStripMenuItem.Enabled = true;
                     }));
                     
                     break;
                 case (int)SocketCommand.UNDO:
+                    Undo();
+                    prcbTime.Value = 0;
+                    
                     break;
-                case (int)SocketCommand.END_GAME:
+                case (int)SocketCommand.TIME_OUT:
+                    MessageBox.Show("Time out!");
+                    break;
+                case (int)SocketCommand.END_GAME:                   
+                    MessageBox.Show("Game over!!");
                     break;
                 default:
                     break;

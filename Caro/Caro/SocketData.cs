@@ -49,6 +49,7 @@ namespace Caro
         NOTIFY,
         NEW_GAME,
         UNDO,
+        TIME_OUT,
         END_GAME,
         QUIT
     }
