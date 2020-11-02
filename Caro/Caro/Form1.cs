@@ -489,7 +489,7 @@ namespace Caro
                     break;
                 case (int)SocketCommand.QUIT:
                     tmCooldown.Stop();
-                    MessageBox.Show("Opponent has exited!");
+                    MessageBox.Show(this, "Opponent has exited!");
                     break;
                 case (int)SocketCommand.SEND_POINT:
                     this.Invoke((MethodInvoker)(() =>
@@ -508,10 +508,10 @@ namespace Caro
                     
                     break;
                 case (int)SocketCommand.TIME_OUT:
-                    MessageBox.Show("Time out!");
+                    MessageBox.Show(this, "Time out!");
                     break;
                 case (int)SocketCommand.END_GAME:                   
-                    MessageBox.Show("Game over!!");
+                    MessageBox.Show(this, "Game over!!");
                     break;
                 default:
                     break;
