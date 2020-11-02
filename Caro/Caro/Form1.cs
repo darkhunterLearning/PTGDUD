@@ -518,6 +518,12 @@ namespace Caro
             }
             Listen();
         }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form2 Info = new Form2();        
+            Info.Show();
+        }
         /*public class ButtonClickEvent : EventArgs
         {
             private Point clickedPoint;
