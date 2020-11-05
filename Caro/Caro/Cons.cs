@@ -11,7 +11,7 @@ namespace Caro
         public static int CHESS_WIDTH = 30;
         public static int CHESS_HEIGHT = 30;
 
-        public static int CHESS_BOARD_WIDTH = 19;
+        public static int CHESS_BOARD_WIDTH = 18;
         public static int CHESS_BOARD_HEIGHT = 15;
 
         public static int STEP_COOL_DOWN = 100;

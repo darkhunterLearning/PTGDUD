@@ -67,7 +67,6 @@ namespace Caro
                 new Player ("Player X", Image.FromFile(Application.StartupPath + "\\assets\\x_symbol.png")),
                 new Player ("Player O", Image.FromFile(Application.StartupPath + "\\assets\\o_symbol.png"))
             };
-            
             CurrentPlayer = 0;
             ChangePlayer();
             Button firstButton = new Button()
@@ -94,9 +93,7 @@ namespace Caro
                 firstButton.Location = new Point(0, firstButton.Location.Y + Cons.CHESS_HEIGHT);
                 firstButton.Width = 0;
                 firstButton.Height = 0;
-            }
-
-            
+            }    
         }
 
         void btn_Click(object sender, EventArgs e)
@@ -125,9 +122,7 @@ namespace Caro
             {
                 EndGame();
                 socket.Send(new SocketData((int)SocketCommand.END_GAME, "", new Point()));
-            }
-
-         
+            }         
         }
 
         public void EndGame()
@@ -249,7 +244,6 @@ namespace Caro
             {
                 if (point.X + i > Cons.CHESS_BOARD_WIDTH || point.Y - i < 0)
                     break;
-
                 if (Matrix[point.Y - i][point.X + i].BackgroundImage == btn.BackgroundImage)
                 {
                     countUp++;
@@ -257,13 +251,11 @@ namespace Caro
                 else
                     break;
             }
-
             int countDown = 0;
             for (int i = 1; i <= Cons.CHESS_BOARD_WIDTH - point.X; i++)
             {
                 if (point.Y + i >= Cons.CHESS_BOARD_HEIGHT || point.X - i < 0)
                     break;
-
                 if (Matrix[point.Y + i][point.X - i].BackgroundImage == btn.BackgroundImage)
                 {
                     countDown++;
@@ -271,9 +263,7 @@ namespace Caro
                 else
                     break;
             }
-
-            return countUp + countDown == 5;
-            
+            return countUp + countDown == 5;   
         }
         private void Mark(Button btn){
             btn.BackgroundImage = Player[CurrentPlayer].Mark; 
@@ -478,8 +468,6 @@ namespace Caro
         {
             switch (data.Command)
             {
-                case (int)SocketCommand.NOTIFY:                   
-                    break;
                 case (int)SocketCommand.NEW_GAME:
                     this.Invoke((MethodInvoker)(() =>
                     {
@@ -499,13 +487,11 @@ namespace Caro
                         tmCooldown.Start();
                         OtherPlayerMark(data.Point);
                         undoToolStripMenuItem.Enabled = true;
-                    }));
-                    
+                    }));         
                     break;
                 case (int)SocketCommand.UNDO:
                     Undo();
                     prcbTime.Value = 0;
-                    
                     break;
                 case (int)SocketCommand.TIME_OUT:
                     MessageBox.Show(this, "Time out!");
